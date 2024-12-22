@@ -1,0 +1,68 @@
+def distribute_tasks(tasks, num_devices):
+    """
+    Distribute the tasks across the given number of devices as evenly as possible.
+    """
+    # Number of tasks each device will definitely get
+    tasks_per_device = len(tasks) // num_devices
+    
+    # How many leftover tasks remain after evenly distributing
+    remainder = len(tasks) % num_devices
+    
+    # This list will hold sub-lists of tasks, one sub-list for each device
+    assigned_tasks = []
+    
+    start_index = 0
+    for i in range(num_devices):
+        # If we still have leftover tasks, give one extra task to this device
+        extra = 1 if i < remainder else 0
+        
+        # Calculate the ending index for this device's tasks
+        end_index = start_index + tasks_per_device + extra
+        
+        # Slice out the tasks for this device
+        device_tasks = tasks[start_index:end_index]
+        
+        # Add this device's tasks to our main list
+        assigned_tasks.append(device_tasks)
+        
+        # Move the start index for the next device
+        start_index = end_index
+    
+    return assigned_tasks
+
+
+def main():
+    # Here is our imaginary HPC project’s task list
+    tasks = [
+        "Process dataset A",
+        "Process dataset B",
+        "Analyze results for dataset A",
+        "Analyze results for dataset B",
+        "Generate summary report for dataset A",
+        "Generate summary report for dataset B",
+        "Run simulation X",
+        "Run simulation Y",
+        "Clean up temporary data",
+        "Archive raw logs"
+    ]
+    
+    print("We have the following tasks in our HPC project:")
+    for i, task in enumerate(tasks, 1):
+        print(f"  {i}. {task}")
+    
+    # Ask the user how many devices are available
+    num_devices = int(input("\nEnter the number of devices available: "))
+    
+    # Distribute tasks among the devices
+    assigned_tasks = distribute_tasks(tasks, num_devices)
+    
+    # Display which tasks each device got
+    for i, device_tasks in enumerate(assigned_tasks, start=1):
+        print(f"\nDevice {i} is assigned the following tasks:")
+        for task in device_tasks:
+            print(f"  - {task}")
+
+
+# Run the main function when the script is executed
+if __name__ == "__main__":
+    main()
